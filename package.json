@@ -1,0 +1,26 @@
+{
+  "name": "job-for-stock-update",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TerryLee7788/job-for-stock-update.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TerryLee7788/job-for-stock-update/issues"
+  },
+  "homepage": "https://github.com/TerryLee7788/job-for-stock-update#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "google-spreadsheet": "^3.0.10",
+    "node-schedule": "^1.3.2"
+  }
+}
