@@ -116,11 +116,6 @@ async function accessSpreadSheet() {
         // load 範圍
         await sheet.loadCells(`A1:E${SHEETCELLS}`);
 
-        const d3 = sheet.getCell(4, 3);
-        d3.value = 7788
-        await sheet.saveUpdatedCells()
-        return
-
         for (let i = 3; i < SHEETCELLS; i++) {
             // for (let i = 3; i < 8; i++) {   // 測試用
 
@@ -157,7 +152,6 @@ async function accessSpreadSheet() {
     catch (error) {
 
         console.log('error: ', error);
-
 
     }
 
