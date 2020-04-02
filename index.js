@@ -1,6 +1,5 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet')
-const creds = require('./client_secret.json')
-const { SHEET_ID } = require('./config')
+const { SHEET_ID, creds } = require('./config')
 
 const {
     getStockCurrentPrice,
@@ -22,26 +21,26 @@ function updateDividendStockPrice({
 }) {
 
     return getStockDividendValue(STOCK)
-            .then((res) => {
+        .then((res) => {
 
-                const { data } = res
-                if (data) {
+            const { data } = res
+            if (data) {
 
-                    const currentStockDividendRate = +(data[data.length - 1][1]) / 100
-                    const currentStockDividend = +((currentPrice * currentStockDividendRate).toFixed(2))
+                const currentStockDividendRate = +(data[data.length - 1][1]) / 100
+                const currentStockDividend = +((currentPrice * currentStockDividendRate).toFixed(2))
 
-                    DIVIDENDCELL.value = +currentStockDividend
+                DIVIDENDCELL.value = +currentStockDividend
 
-                }
-                else {
+            }
+            else {
 
-                    // API 抓不到資料，標記一下手動更新
-                    // 備案: 用爬蟲
-                    DIVIDENDCELL.value = 0
+                // API 抓不到資料，標記一下手動更新
+                // 備案: 用爬蟲
+                DIVIDENDCELL.value = 0
 
-                }
+            }
 
-            })
+        })
 
 }
 
@@ -106,53 +105,59 @@ function updateCurrentStockPrice({
 
 async function accessSpreadSheet() {
 
-    const doc = new GoogleSpreadsheet(SHEET_ID)
+    try {
 
-    const {
-        client_email,
-        private_key
-    } = creds
+        const doc = new GoogleSpreadsheet(SHEET_ID)
 
-    await doc.useServiceAccountAuth({
-        client_email,
-        private_key
-    })
-    await doc.useServiceAccountAuth(creds)
-    await doc.loadInfo()
+        await doc.useServiceAccountAuth(creds)
+        await doc.loadInfo()
 
-    const sheet = doc.sheetsByIndex[0]
-    // load 範圍
-    await sheet.loadCells(`A1:E${SHEETCELLS}`);
+        const sheet = doc.sheetsByIndex[0]
+        // load 範圍
+        await sheet.loadCells(`A1:E${SHEETCELLS}`);
 
-    for (let i = 3; i < SHEETCELLS; i++) {
-    // for (let i = 3; i < 8; i++) {   // 測試用
+        const d3 = sheet.getCell(4, 3);
+        d3.value = 7788
+        await sheet.saveUpdatedCells()
+        return
 
-        // "股票" 那欄
-        const a1 = sheet.getCell(i, 0);
-        // "目前股價" 那欄
-        const d3 = sheet.getCell(i, 3);
-        // "股利政策" 那欄
-        const b1 = sheet.getCell(i, 1);
+        for (let i = 3; i < SHEETCELLS; i++) {
+            // for (let i = 3; i < 8; i++) {   // 測試用
 
-        // 如果空格有填東西
-        if (a1._rawData.effectiveValue) {
+            // "股票" 那欄
+            const a1 = sheet.getCell(i, 0);
+            // "目前股價" 那欄
+            const d3 = sheet.getCell(i, 3);
+            // "股利政策" 那欄
+            const b1 = sheet.getCell(i, 1);
 
-            const STOCK = formateStockText(a1._rawData.effectiveValue.stringValue)
+            // 如果空格有填東西
+            if (a1._rawData.effectiveValue) {
 
-            if (STOCK) {
+                const STOCK = formateStockText(a1._rawData.effectiveValue.stringValue)
 
-                await updateCurrentStockPrice({
-                    STOCK,
-                    TARGETCELL: d3,
-                    DIVIDENDCELL: b1,
-                    wait: i
-                })
-                // sheet 更新
-                await sheet.saveUpdatedCells()
+                if (STOCK) {
+
+                    await updateCurrentStockPrice({
+                        STOCK,
+                        TARGETCELL: d3,
+                        DIVIDENDCELL: b1,
+                        wait: i
+                    })
+                    // sheet 更新
+                    await sheet.saveUpdatedCells()
+
+                }
 
             }
 
         }
+
+    }
+    catch (error) {
+
+        console.log('error: ', error);
+
 
     }
 

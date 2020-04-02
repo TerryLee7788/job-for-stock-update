@@ -1,1 +1,1 @@
-web: node job.js
+web: npm start
