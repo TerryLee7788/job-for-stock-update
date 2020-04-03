@@ -5,7 +5,7 @@ const schedule = require('node-schedule');
 const { exec } = require('child_process');
 
 const jobCallBack = () => {
-    exec('npm start', (error, stdout, stderr) => {
+    exec('node index.js', (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return;
