@@ -48,8 +48,7 @@ function updateDividendStockPrice({
 function updateCurrentStockPrice({
     STOCK,
     TARGETCELL,
-    DIVIDENDCELL,
-    wait = 0
+    DIVIDENDCELL
 }) {
 
     return new Promise((resolve) => {
@@ -136,8 +135,7 @@ async function accessSpreadSheet() {
                     await updateCurrentStockPrice({
                         STOCK,
                         TARGETCELL: d3,
-                        DIVIDENDCELL: b1,
-                        wait: i
+                        DIVIDENDCELL: b1
                     })
                     // sheet 更新
                     await sheet.saveUpdatedCells()
