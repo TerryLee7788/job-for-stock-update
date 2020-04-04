@@ -5,6 +5,6 @@
 
 ## Features
 * 使用 [google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet) 更新 [google sheet](https://docs.google.com/spreadsheets/)
-* 使用 [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) 寫排程更新 [google sheet](https://docs.google.com/spreadsheets/)
 * 使用 [axios](https://github.com/axios/axios) 在 nodejs server 端，打[證交所](https://www.twse.com.tw/) API 抓股票資料
 * 使用 [heroku](https://www.heroku.com/) 把排程放在雲端主機
+* 使用 [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) 寫排程更新 [google sheet](https://docs.google.com/spreadsheets/)
