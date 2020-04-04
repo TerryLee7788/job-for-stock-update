@@ -1,5 +1,5 @@
 // 每天下午 6:00:00 觸發
-const crontab = '0 0 18 * * *'
+const crontab = '0 0 * * * *'
 const schedule = require('node-schedule');
 const { exec } = require('child_process');
 
