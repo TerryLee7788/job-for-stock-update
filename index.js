@@ -113,40 +113,37 @@ async function accessSpreadSheet() {
         const sheet = doc.sheetsByIndex[0]
         // load 範圍
         await sheet.loadCells(`A1:E${SHEETCELLS}`);
-        const d3 = sheet.getCell(4, 3);
-        d3.value = 7788
-        await sheet.saveUpdatedCells()
 
-        // for (let i = 3; i < SHEETCELLS; i++) {
-        //     // for (let i = 3; i < 8; i++) {   // 測試用
+        for (let i = 3; i < SHEETCELLS; i++) {
+            // for (let i = 3; i < 8; i++) {   // 測試用
 
-        //     // "股票" 那欄
-        //     const a1 = sheet.getCell(i, 0);
-        //     // "目前股價" 那欄
-        //     const d3 = sheet.getCell(i, 3);
-        //     // "股利政策" 那欄
-        //     const b1 = sheet.getCell(i, 1);
+            // "股票" 那欄
+            const a1 = sheet.getCell(i, 0);
+            // "目前股價" 那欄
+            const d3 = sheet.getCell(i, 3);
+            // "股利政策" 那欄
+            const b1 = sheet.getCell(i, 1);
 
-        //     // 如果空格有填東西
-        //     if (a1._rawData.effectiveValue) {
+            // 如果空格有填東西
+            if (a1._rawData.effectiveValue) {
 
-        //         const STOCK = formateStockText(a1._rawData.effectiveValue.stringValue)
+                const STOCK = formateStockText(a1._rawData.effectiveValue.stringValue)
 
-        //         if (STOCK) {
+                if (STOCK) {
 
-        //             await updateCurrentStockPrice({
-        //                 STOCK,
-        //                 TARGETCELL: d3,
-        //                 DIVIDENDCELL: b1
-        //             })
-        //             // sheet 更新
-        //             await sheet.saveUpdatedCells()
+                    await updateCurrentStockPrice({
+                        STOCK,
+                        TARGETCELL: d3,
+                        DIVIDENDCELL: b1
+                    })
+                    // sheet 更新
+                    await sheet.saveUpdatedCells()
 
-        //         }
+                }
 
-        //     }
+            }
 
-        // }
+        }
 
     }
     catch (error) {
