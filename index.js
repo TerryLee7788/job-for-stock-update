@@ -3,11 +3,14 @@ const { SHEET_ID, creds } = require('./config')
 
 const {
     getStockCurrentPrice,
-    getStockDividendValue
+    getStockDividendValue,
+    getStockCurrentPriceFromYahoo,
+    getDividendValueFromYahoo
 } = require('./Service')
 
 const SLEEP = 4 * 1000
 const SHEETCELLS = 110
+const START_AT = 3
 
 function formateStockText(text) {
     return text.replace(/[^0-9]+/, '')
@@ -24,6 +27,8 @@ function updateDividendStockPrice({
         .then((res) => {
 
             const { data } = res
+
+            // 抓到資料
             if (data) {
 
                 const currentStockDividendRate = +(data[data.length - 1][1]) / 100
@@ -32,11 +37,16 @@ function updateDividendStockPrice({
                 DIVIDENDCELL.value = +currentStockDividend
 
             }
+            // 證交所 API 抓不到，改去 yahoo
             else {
 
-                // API 抓不到資料，標記一下手動更新
-                // 備案: 用爬蟲
-                DIVIDENDCELL.value = 0
+                getDividendValueFromYahoo(STOCK)
+                    .then((res) => {
+
+                        const { dividend: value } = res
+                        DIVIDENDCELL.value = value
+
+                    })
 
             }
 
@@ -60,38 +70,45 @@ function updateCurrentStockPrice({
                 .then((res) => {
 
                     const { data } = res
+                    let currentPrice = 0
 
                     // 抓到資料
                     if (data) {
 
-                        const currentPrice = data[data.length - 2][1]
+                        currentPrice = data[data.length - 2][1]
 
                         TARGETCELL.value = +currentPrice
 
-                        setTimeout(() => {
-
-                            updateDividendStockPrice({
-                                STOCK,
-                                DIVIDENDCELL,
-                                currentPrice
-                            })
-                                .then(() => {
-
-                                    resolve()
-
-                                })
-
-                        }, 1000);
 
                     }
+                    // 證交所 API 抓不到，改去 yahoo
                     else {
 
-                        // API 抓不到資料，標記一下手動更新
-                        // 備案: 用爬蟲
-                        TARGETCELL.value = 0
-                        resolve()
+                        getStockCurrentPriceFromYahoo(STOCK)
+                            .then((res) => {
+
+                                const { price: value } = res
+                                TARGETCELL.value = +value
+
+                            })
 
                     }
+
+                    // 間隔1秒，再去更新股利
+                    setTimeout(() => {
+
+                        updateDividendStockPrice({
+                            STOCK,
+                            DIVIDENDCELL,
+                            currentPrice
+                        })
+                            .then(() => {
+
+                                resolve()
+
+                            })
+
+                    }, 1000);
 
                 })
 
@@ -114,8 +131,7 @@ async function accessSpreadSheet() {
         // load 範圍
         await sheet.loadCells(`A1:E${SHEETCELLS}`);
 
-        for (let i = 3; i < SHEETCELLS; i++) {
-            // for (let i = 3; i < 8; i++) {   // 測試用
+        for (let i = START_AT; i < SHEETCELLS; i++) {
 
             // "股票" 那欄
             const a1 = sheet.getCell(i, 0);
