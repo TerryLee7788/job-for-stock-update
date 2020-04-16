@@ -5,7 +5,7 @@
 
 ## Features
 * 使用 [google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet) 更新 [google sheet](https://docs.google.com/spreadsheets/)
-* 使用 [axios](https://github.com/axios/axios) 在 nodejs server 端，打[證交所](https://www.twse.com.tw/) API 抓股票資料
-* 使用 [cheerio](https://www.npmjs.com/package/cheerio) 寫爬蟲抓一些股票資訊 (如果證交所沒辦法提供)
+* 使用 [axios](https://github.com/axios/axios) 在 nodejs server 端，棄用 [證交所](https://www.twse.com.tw/) API，改用 [Yahoo](https://tw.stock.yahoo.com/) API 抓股票資料
+* 使用 [cheerio](https://www.npmjs.com/package/cheerio) 寫爬蟲抓一些股票資訊
 * 使用 [heroku](https://www.heroku.com/) 把 code 放在雲端主機
 * 使用 [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) 寫排程每天晚上6點執行更新表單
