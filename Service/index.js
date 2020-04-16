@@ -1,5 +1,6 @@
 const axios = require('axios')
 const cheerio = require("cheerio")
+const utils = require('../utils')
 
 module.exports = {
     getStockCurrentPrice: async (stockNum) => (
@@ -32,7 +33,25 @@ module.exports = {
             .then((res) => {
                 const $ = cheerio.load(res.data)
                 const dividend = +$('tr[bgcolor="#FFF0C1"] + tr[bgcolor="#FFFFFF"] td:last-child').text()
-                return { dividend };
+
+                const currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:last-child').text()
+                const lastYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
+                const previousYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child').text()
+
+                const pastThreeYearsArray = [
+                    currentYear,
+                    lastYear,
+                    previousYear
+                ]
+                const pastThreeYearsSum = pastThreeYearsArray.reduce((sum, num) => {
+                    sum += num
+                    return sum
+                }, 0)
+
+                const averageOfPastThreeYears = utils.strip(pastThreeYearsSum / pastThreeYearsArray.length)
+
+                return { dividend: averageOfPastThreeYears };
+                // return { dividend };
             })
     }
 }

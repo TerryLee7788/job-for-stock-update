@@ -19,36 +19,14 @@ function formateStockText(text) {
 // 更新股利政策
 function updateDividendStockPrice({
     STOCK,
-    DIVIDENDCELL,
-    currentPrice
+    DIVIDENDCELL
 }) {
 
-    return getStockDividendValue(STOCK)
+    return getDividendValueFromYahoo(STOCK)
         .then((res) => {
 
-            const { data } = res
-
-            // 抓到資料
-            if (data) {
-
-                const currentStockDividendRate = +(data[data.length - 1][1]) / 100
-                const currentStockDividend = +((currentPrice * currentStockDividendRate).toFixed(2))
-
-                DIVIDENDCELL.value = +currentStockDividend
-
-            }
-            // 證交所 API 抓不到，改去 yahoo
-            else {
-
-                getDividendValueFromYahoo(STOCK)
-                    .then((res) => {
-
-                        const { dividend: value } = res
-                        DIVIDENDCELL.value = value
-
-                    })
-
-            }
+            const { dividend: value } = res
+            DIVIDENDCELL.value = value
 
         })
 
@@ -66,41 +44,21 @@ function updateCurrentStockPrice({
         setTimeout(() => {
             console.log('STOCK: ', STOCK);
 
-            getStockCurrentPrice(STOCK)
+            getStockCurrentPriceFromYahoo(STOCK)
                 .then((res) => {
 
-                    const { data } = res
-                    let currentPrice = 0
+                    const { price: value } = res
+                    TARGETCELL.value = +value
 
-                    // 抓到資料
-                    if (data) {
+                })
+                .then(() => {
 
-                        currentPrice = data[data.length - 2][1]
-
-                        TARGETCELL.value = +currentPrice
-
-
-                    }
-                    // 證交所 API 抓不到，改去 yahoo
-                    else {
-
-                        getStockCurrentPriceFromYahoo(STOCK)
-                            .then((res) => {
-
-                                const { price: value } = res
-                                TARGETCELL.value = +value
-
-                            })
-
-                    }
-
-                    // 間隔1秒，再去更新股利
+                    // 間隔 500 毫秒，再去更新股利
                     setTimeout(() => {
 
                         updateDividendStockPrice({
                             STOCK,
-                            DIVIDENDCELL,
-                            currentPrice
+                            DIVIDENDCELL
                         })
                             .then(() => {
 
@@ -108,7 +66,7 @@ function updateCurrentStockPrice({
 
                             })
 
-                    }, 1000);
+                    }, 500);
 
                 })
 
