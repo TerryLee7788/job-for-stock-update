@@ -3,3 +3,4 @@ client_secret.json
 .env
 job.js
 ecosystem.config.js
+test.js
