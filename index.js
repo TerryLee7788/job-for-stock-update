@@ -9,7 +9,7 @@ const {
 } = require('./Service')
 
 const SLEEP = 4 * 1000
-const SHEETCELLS = 110
+const SHEETCELLS = 500
 const START_AT = 3
 
 function formateStockText(text) {
