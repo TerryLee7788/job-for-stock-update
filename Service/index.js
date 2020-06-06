@@ -34,9 +34,13 @@ module.exports = {
                 const $ = cheerio.load(res.data)
                 const dividend = +$('tr[bgcolor="#FFF0C1"] + tr[bgcolor="#FFFFFF"] td:last-child').text()
 
-                const currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:last-child').text()
-                const lastYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
-                const previousYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child').text()
+                // 新的一年股利還沒全部配置好，但 yahoo 網頁已經先多一列是預備放新的一年的鼓勵，所以先暫時拿掉
+                // const currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:last-child').text()
+                // const lastYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
+                // const previousYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child').text()
+                const currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
+                const lastYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child').text()
+                const previousYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(5) td:last-child').text()
 
                 const pastThreeYearsArray = [
                     currentYear,
