@@ -37,8 +37,8 @@ module.exports = {
                 let lastYear = 0
                 let previousYear = 0
 
-                const currentYearNum = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:first-child').text()
-                const lastYearNum = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:first-child').text()
+                const currentYearNum = $('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:first-child').text()
+                const lastYearNum = $('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:first-child').text()
                 // 新的一年股利還沒全部配置好，但 yahoo 網頁已經先多一列是預備放新的一年的鼓勵，所以先加個判斷
                 if (currentYearNum === lastYearNum) {
                     currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
