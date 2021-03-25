@@ -39,16 +39,39 @@ module.exports = {
 
                 const currentYearNum = $('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:first-child').text()
                 const lastYearNum = $('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:first-child').text()
-                // 新的一年股利還沒全部配置好，但 yahoo 網頁已經先多一列是預備放新的一年的鼓勵，所以先加個判斷
-                if (currentYearNum === lastYearNum) {
-                    currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
-                    lastYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child').text()
-                    previousYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(5) td:last-child').text()
+                const lastTwoYearNum = $('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:first-child').text()
+                const YahooRowSelectors = {
+                    firstRow: 'tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:last-child',
+                    secondRow: 'tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child',
+                    thirdRow: 'tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child',
+                    fourthRow: 'tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(5) td:last-child'
                 }
+                const {
+                    firstRow,
+                    secondRow,
+                    thirdRow,
+                    fourthRow,
+                } = YahooRowSelectors
+                // 新的一年股利還沒全部配置好，但 yahoo 網頁已經先多一列是預備放新的一年的鼓勵，所以先加個判斷
+                // eg: 當前表格前2列為: 108年、108年 (因: 當年股利尚未發布)
+                // https://tw.stock.yahoo.com/d/s/dividend_2886.html
+                if (currentYearNum === lastYearNum) {
+                    currentYear = +$(secondRow).text()
+                    lastYear = +$(thirdRow).text()
+                    previousYear = +$(fourthRow).text()
+                }
+                // eg: 當前表格2，3列為: 108年、108年 (因: 當年股利已經發布)
+                // https://tw.stock.yahoo.com/d/s/dividend_4205.html
+                else if (lastYearNum === lastTwoYearNum) {
+                    currentYear = +$(firstRow).text()
+                    lastYear = +$(secondRow).text()
+                    previousYear = +$(fourthRow).text()
+                }
+                // 正常版的版位
                 else {
-                    currentYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(2) td:last-child').text()
-                    lastYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(3) td:last-child').text()
-                    previousYear = +$('tr[bgcolor="#FFF0C1"] ~ tr[bgcolor="#FFFFFF"]:nth-of-type(4) td:last-child').text()
+                    currentYear = +$(firstRow).text()
+                    lastYear = +$(secondRow).text()
+                    previousYear = +$(thirdRow).text()
                 }
 
                 const pastThreeYearsArray = [
