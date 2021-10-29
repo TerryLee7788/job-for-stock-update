@@ -5,7 +5,7 @@ const {
     getStockCurrentPrice,
     getStockDividendValue,
     getStockCurrentPriceFromYahoo,
-    getDividendValueFromYahoo
+    getDividendValue
 } = require('./Service')
 
 const SLEEP = 4 * 1000
@@ -22,7 +22,7 @@ function updateDividendStockPrice({
     DIVIDENDCELL
 }) {
 
-    return getDividendValueFromYahoo(STOCK)
+    return getDividendValue(STOCK)
         .then((res) => {
 
             const { dividend: value } = res

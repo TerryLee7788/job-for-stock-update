@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": ""
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -18,9 +18,10 @@
   },
   "homepage": "https://github.com/TerryLee7788/job-for-stock-update#readme",
   "dependencies": {
-    "axios": "^0.19.2",
-    "cheerio": "^1.0.0-rc.3",
+    "axios": "^0.24.0",
+    "cheerio": "^1.0.0-rc.10",
     "dotenv": "^8.2.0",
-    "google-spreadsheet": "^3.0.10"
+    "google-spreadsheet": "^3.1.15",
+    "qs": "^6.10.1"
   }
 }
