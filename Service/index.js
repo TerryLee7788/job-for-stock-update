@@ -32,8 +32,6 @@ module.exports = {
     getDividendValue: async (stockNum) => {
         // 換 PCHOME
         const url = `https://pchome.megatime.com.tw/stock/sto3/ock1/sid${stockNum}.html`
-        // const url = `https://tw.stock.yahoo.com/quote/${stockNum}/dividend`
-        // const url = `https://tw.stock.yahoo.com/d/s/dividend_${stockNum}.html`
         return await axios.post(
             url,
             Qs.stringify({ is_check: 1 })
@@ -57,9 +55,9 @@ module.exports = {
                     fourthRow,
                 } = RowSelectors
 
-               currentYear = +$(firstRow).text()
-               lastYear = +$(secondRow).text()
-               previousYear = +$(thirdRow).text()
+                currentYear = +$(firstRow).text()
+                lastYear = +$(secondRow).text()
+                previousYear = +$(thirdRow).text()
 
                 const pastThreeYearsArray = [
                     currentYear,
