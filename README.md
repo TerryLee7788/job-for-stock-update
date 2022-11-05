@@ -1,7 +1,7 @@
 # job-for-stock-update
-* 把自己整理的一些存股進場策略放到 google sheet 上
-* 但... 每天手動更新股票好累，而且房間也好熱 (電腦一直開著...) QQ
-* 只好發揮自己的 js 專長來解決問題囉~
+* 整理的一些存股進場策略放到 google sheet 上
+* 接著依照 google sheet 的股票代號利用 js 爬蟲更新 "股價 & 近3年" 的除權息資訊
+* 再使用排成讓它自動化每天更新
 
 ## Features
 * 使用 [google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet) 更新 [google sheet](https://docs.google.com/spreadsheets/)
