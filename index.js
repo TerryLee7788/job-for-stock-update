@@ -8,7 +8,7 @@ const {
     getDividendValue
 } = require('./Service')
 
-const SLEEP = 4 * 1000
+const SLEEP = 5 * 1000
 const SHEETCELLS = 500
 const START_AT = 3
 
