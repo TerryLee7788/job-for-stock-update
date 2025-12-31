@@ -1,0 +1,34 @@
+name: Daily Stock Update
+
+on:
+  schedule:
+    # 每天 UTC 時間 10:00 執行 (即台灣時間 18:00)
+    - cron: '0 10 * * *'
+  # 允許手動在 GitHub 頁面上點擊按鈕觸發 (方便測試)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run update script
+      # 請確保您的 Google Sheet 憑證 (credentials.json) 有透過 GitHub Secrets 設定
+      # 或者將憑證內容設為環境變數
+      env:
+        GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+        GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+        GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+      run: node index.js # 假設您的進入點是 index.js，請依實際情況修改
