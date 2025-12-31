@@ -1,5 +1,20 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet')
-const { SHEET_ID, creds } = require('./config')
+
+let SHEET_ID, creds
+try {
+    // 本機開發時使用 config.js
+    const config = require('./config')
+    SHEET_ID = config.SHEET_ID
+    creds = config.creds
+} catch (e) {
+    // GitHub Actions 環境下使用環境變數
+    SHEET_ID = process.env.GOOGLE_SHEET_ID
+    creds = {
+        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+        // 處理 Private Key 中的換行符號
+        private_key: process.env.GOOGLE_PRIVATE_KEY ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+    }
+}
 
 const {
     getStockCurrentPrice,
