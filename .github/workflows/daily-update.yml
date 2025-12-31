@@ -1,9 +1,9 @@
 name: Daily Stock Update
 
 on:
-  schedule:
-    # 每天 UTC 時間 10:00 執行 (即台灣時間 18:00)
-    - cron: '0 10 * * *'
+  # schedule:
+  #   # 每天 UTC 時間 10:00 執行 (即台灣時間 18:00)
+  #   - cron: '0 10 * * *'
   # 允許手動在 GitHub 頁面上點擊按鈕觸發 (方便測試)
   workflow_dispatch:
 
