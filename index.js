@@ -54,16 +54,18 @@ function updateCurrentStockPrice({
     DIVIDENDCELL
 }) {
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
 
         setTimeout(() => {
-            console.log('STOCK: ', STOCK);
+            console.log('開始處理 STOCK: ', STOCK);
 
             getStockCurrentPriceFromYahoo(STOCK)
                 .then((res) => {
 
                     const { price: value } = res
                     TARGETCELL.value = +value
+                    console.log(`✓ ${STOCK} 股價更新成功: ${value}`);
+                    return res; // 重要：返回結果以繼續 Promise 鏈
 
                 })
                 .then(() => {
@@ -76,13 +78,21 @@ function updateCurrentStockPrice({
                             DIVIDENDCELL
                         })
                             .then(() => {
-
+                                console.log(`✓ ${STOCK} 股利更新成功`);
                                 resolve()
 
+                            })
+                            .catch((err) => {
+                                console.log(`✗ ${STOCK} 股利更新失敗:`, err.message);
+                                resolve(); // 股利失敗仍然繼續，不中斷主程序
                             })
 
                     }, 500);
 
+                })
+                .catch((err) => {
+                    console.log(`✗ ${STOCK} 股價獲取失敗:`, err.message);
+                    reject(err); // 股價失敗才拋出錯誤
                 })
 
         }, SLEEP);
@@ -104,6 +114,9 @@ async function accessSpreadSheet() {
         // load 範圍
         await sheet.loadCells(`A1:E${SHEETCELLS}`);
 
+        let processedCount = 0;
+        console.log('開始處理股票列表...\n');
+
         for (let i = START_AT; i < SHEETCELLS; i++) {
 
             // "股票" 那欄
@@ -120,24 +133,42 @@ async function accessSpreadSheet() {
 
                 if (STOCK) {
 
-                    await updateCurrentStockPrice({
-                        STOCK,
-                        TARGETCELL: d3,
-                        DIVIDENDCELL: b1
-                    })
-                    // sheet 更新
-                    await sheet.saveUpdatedCells()
+                    try {
+                        await updateCurrentStockPrice({
+                            STOCK,
+                            TARGETCELL: d3,
+                            DIVIDENDCELL: b1
+                        })
+                        // sheet 更新
+                        await sheet.saveUpdatedCells()
+                        processedCount++;
+                        console.log(`\n✓ 已保存 ${STOCK} 到 Sheet\n`);
 
+                    } catch (itemError) {
+                        console.log(`\n✗ 處理 ${STOCK} 時出錯，繼續下一個...`);
+                        console.log(`  錯誤訊息: ${itemError.message}\n`);
+                        // 繼續處理下一個股票
+                        continue;
+                    }
+
+                } else {
+                    // 無效的股票格式，跳過
+                    continue;
                 }
 
+            } else {
+                // 空的欄位，跳過
+                continue;
             }
 
         }
 
+        console.log(`\n✓ 完成！共處理了 ${processedCount} 只股票`);
+
     }
     catch (error) {
 
-        console.log('error: ', error);
+        console.log('致命錯誤: ', error);
 
     }
 

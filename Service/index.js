@@ -14,17 +14,18 @@ module.exports = {
     ),
     getStockCurrentPriceFromYahoo: (stockNum) => (
         new Promise(async (resolve, reject) => {
-            await axios.get(`https://tw.quote.finance.yahoo.net/quote/q?type=tick&sym=${stockNum}&callback=jsonpCallback`)
+            await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${stockNum}.TW`)
                 .then((res) => {
-                    const jsonpCallback = async (res) => {
-                        const { tick } = res
-                        const { p: price } = tick[tick.length - 1]
-
-                        return resolve({ price })
-                    }
-                    eval(res.data)
+                    // debugger
+                    const { chart } = res.data
+                    const [ result ] = chart.result
+                    const { meta: {
+                        regularMarketPrice: price
+                    } } = result
+                    return resolve({ price })
                 })
                 .catch((err) => {
+                    console.log(`✗ ${stockNum} 從 Yahoo 獲取股價失敗:`, err.message);
                     reject(err)
                 })
         })
