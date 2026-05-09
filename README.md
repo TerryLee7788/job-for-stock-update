@@ -1,6 +1,5 @@
 # job-for-stock-update
 
-## Goals
 * 整理的一些存股進場策略放到 google sheet 上
 * 接著依照 google sheet 的股票代號利用 js 爬蟲更新 "股價 & 近3年" 的除權息資訊
 * 再使用 github Action 設定排成，讓它自動化每天更新
