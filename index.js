@@ -28,7 +28,7 @@ const SHEETCELLS = 500
 const START_AT = 3
 
 function formateStockText(text) {
-    return text.replace(/[^0-9]+/, '')
+    return text.replace(/[^0-9]/g, '')
 }
 
 // 更新股利政策
@@ -48,56 +48,28 @@ function updateDividendStockPrice({
 }
 
 // 更新股價
-function updateCurrentStockPrice({
+async function updateCurrentStockPrice({
     STOCK,
     TARGETCELL,
     DIVIDENDCELL
 }) {
 
-    return new Promise((resolve, reject) => {
+    await new Promise(resolve => setTimeout(resolve, SLEEP));
+    console.log('開始處理 STOCK: ', STOCK);
 
-        setTimeout(() => {
-            console.log('開始處理 STOCK: ', STOCK);
+    const { price: value } = await getStockCurrentPriceFromYahoo(STOCK)
+    TARGETCELL.value = +value
+    console.log(`✓ ${STOCK} 股價更新成功: ${value}`);
 
-            getStockCurrentPriceFromYahoo(STOCK)
-                .then((res) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-                    const { price: value } = res
-                    TARGETCELL.value = +value
-                    console.log(`✓ ${STOCK} 股價更新成功: ${value}`);
-                    return res; // 重要：返回結果以繼續 Promise 鏈
-
-                })
-                .then(() => {
-
-                    // 間隔 500 毫秒，再去更新股利
-                    setTimeout(() => {
-
-                        updateDividendStockPrice({
-                            STOCK,
-                            DIVIDENDCELL
-                        })
-                            .then(() => {
-                                console.log(`✓ ${STOCK} 股利更新成功`);
-                                resolve()
-
-                            })
-                            .catch((err) => {
-                                console.log(`✗ ${STOCK} 股利更新失敗:`, err.message);
-                                resolve(); // 股利失敗仍然繼續，不中斷主程序
-                            })
-
-                    }, 500);
-
-                })
-                .catch((err) => {
-                    console.log(`✗ ${STOCK} 股價獲取失敗:`, err.message);
-                    reject(err); // 股價失敗才拋出錯誤
-                })
-
-        }, SLEEP);
-
-    })
+    try {
+        await updateDividendStockPrice({ STOCK, DIVIDENDCELL })
+        console.log(`✓ ${STOCK} 股利更新成功`);
+    } catch (err) {
+        console.log(`✗ ${STOCK} 股利更新失敗:`, err.message);
+        // 股利失敗不中斷主程序
+    }
 
 }
 
